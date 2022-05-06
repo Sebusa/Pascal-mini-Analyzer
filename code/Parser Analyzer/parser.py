@@ -7,7 +7,7 @@ VERBOSE = 1
 
 def p_program(p): 
 	'''pascal-program : PROGRAM ID program-heading SEMICOLON block DOT
-						| PROGRAM ID SEMICOLON'''
+						| PROGRAM ID SEMICOLON block DOT'''
 	pass
 
 def p_heading(p):
@@ -26,8 +26,6 @@ def p_block(p):
 			 | label-declaration SEMICOLON block1'''
 	pass
 
-
-
 def p_block1(p):
 	'''block1 : block2 
 			  | constant-declaration SEMICOLON block2''' 
@@ -37,7 +35,6 @@ def p_block2(p):
 	'''block2 : block3 
 			  | type-declaration SEMICOLON block3''' 
 	pass
-
 
 def p_block3(p):
 	'''block3 : block4 
@@ -60,17 +57,17 @@ def p_labelDeclaration(p):
 
 
 def p_constantDeclaration(p):
-	'''constant-declaration : CONST ID COMPARATION constant 
-							| constant-declaration  SEMICOLON  ID COMPARATION constant''' 
+	'''constant-declaration : CONST ID EQUAL constant 
+							| constant-declaration  SEMICOLON  ID EQUAL constant''' 
 	pass
 
 def p_typeDeclaration(p):
-	'''type-declaration : type ID COMPARATION type 
-						| type-declaration SEMICOLON ID COMPARATION type '''
+	'''type-declaration : type ID EQUAL type 
+						| type-declaration SEMICOLON ID EQUAL type '''
 	pass
 
 def p_variableDeclaration(p):
-	'''variable-declaration : VAR variableid-list COLON type SEMICOLON
+	'''variable-declaration : VAR variableid-list COLON type 
 							| variable-declaration SEMICOLON variableid-list COLON type '''
 	pass
 
@@ -80,28 +77,18 @@ def p_variableIdList(p):
 	pass
 
 def p_constant(p):
-	'''constant : INTEGER 
+	'''constant : INTEGER
+				| NUMBER 
 				| REAL 
 				| STRING 
 				| constid  
 				| PLUS constid'''
 	pass
 	
-"""def p_type(p):
-	'''type : simple-type 
-			| structured-type 
-			| typeid'''
-	pass"""
-
 def p_type(p):
 	'''type : simple-type 
 			| structured-type 
-			| typeid 	
-	        | INTEGER   
-			| REAL 
-			| STRING 
-			| constid  
-			| PLUS constid'''
+			| typeid'''
 	pass
 
 
@@ -206,14 +193,14 @@ def p_parameteridList(p):
 	pass
 
 def p_statementList(p):
-	'''statement-list : statement 
+	'''statement-list : statement
 					  | statement-list SEMICOLON statement'''
 	pass
 
 def p_statement(p): 
    '''statement : empty 
    				| variable EQUAL expression 
-   				| BEGIN statement-list END  
+   				| BEGIN statement-list END statement 
    				| IF expression THEN statement 
    				| IF expression THEN statement ELSE statement  
    				| CASE expression OF case-list END  
@@ -224,7 +211,10 @@ def p_statement(p):
    				| procid LPAREN expression-list RPAREN  
    				| GOTO label 
    				| WITH record-variable-list DO statement  
-   				| label COLON statement'''	
+   				| label COLON statement
+				| WRITE LPAREN STRING RPAREN
+				| READ LPAREN ID RPAREN
+				'''	
    pass
 
 def p_variable(p):
@@ -234,7 +224,7 @@ def p_variable(p):
 			    | variable'''
    pass
 
-def p_subscriptlist(p):
+def p_subscriptlist(p):			
 	'''subscript-list : expression  
     				  |	subscript-list COMMA expression'''
 	pass
@@ -254,7 +244,7 @@ def p_expressionlist(p):
     				   | expression-list COMMA expression'''
 	pass
 	
-def p_label(P):  
+def p_label(p):  
    '''label : INTEGER'''
    pass
 
@@ -262,7 +252,6 @@ def p_recordvariablelist(p):
 	'''record-variable-list : variable  
     						| record-variable-list COMMA variable''' 
 	pass
-
 
 def p_expression(p):
    '''expression : expression relational-op additive-expression 
@@ -300,7 +289,7 @@ def p_multiplicative_op(p):
 					    | DIV  
 						| MOD  
 						| AND  
-						| IN'''
+						'''
    pass
 
 def p_unaryExpression(P): 
@@ -315,7 +304,8 @@ def p_unaryop(p):
 	pass
 
 def p_primaryexpression(p):  
-   '''primary-expression : variable 
+   '''primary-expression : ID
+						 | NUMBER
 						 | INTEGER
 						 | REAL
 						 | STRING 
@@ -360,7 +350,6 @@ def p_varid(p):
 	'''varid : ID'''
 	pass
 
-
 def p_empty(p):
 	'''empty : '''
 	pass
@@ -370,7 +359,7 @@ def p_error(p):
 		if p is not None:
 			print ("ERROR SINTACTICO EN LA LINEA " + str(p.lexer.lineno) + " NO SE ESPERABA EL Token  " + str(p.value))
 		else:
-			print ("ERROR SINTACTICO EN LA LINEA: " + str(lexerPascal.lexer.lineno))
+			print ("ERROR SINTACTICO EN LA LINEA: " + str(lexer.lexer.lineno))
 	else:
 		raise Exception('syntax', 'error')
 		
@@ -385,7 +374,7 @@ if __name__ == '__main__':
 		fin = 'prueba.pas'
 
 	f = open(fin, 'r')
-	data = f.read()
+	data = f.read().lower()
 	#print (data)
 	parser.parse(data, tracking=True)
 	print("Amiguito, tengo el placer de informa que Tu parser reconocio correctamente todo")

@@ -1,27 +1,34 @@
+'''Analizador lexico de mini Pascal.
+Integrantes:
+-Sebastian Buitrago
+-Juan Esteban Corrales
+-Juan Alejandro Mora
+'''
+from ast import Pass
 import ply.lex as lex
+import ply.yacc as yacc
 import sys
 
 #lista de tokens
 tokens = (
     #palabras reservadas
     'ARRAY',
+    'AND',
     'BEGIN',
     'CONST',
-    'AND',
-    'IN',
-    'NOT',
-    'REAL',
     'CHAR',
-    'BOOLEAN',
+    'COMPARATION',
     'DOWNTO',
-    'FORWARD',
-    'OR',
     'END',
     'FOR',
     'FUNCTION',
+    'FORWARD',
     'IF',
+    'INPUT',
+    'OUTPUT',
     'LABEL',
     'NIL',
+    'NOT',
     'PROGRAM',
     'REPEAT',
     'TO',
@@ -32,10 +39,12 @@ tokens = (
     'FILE',
     'GOTO',
     'OF',
+    'OR',
     'PACKED',
     'PROCEDURE',
     'RECORD',
     'SET',
+    'THEN',
     'TYPE',
     'UNTIL',
     'VAR',
@@ -51,9 +60,11 @@ tokens = (
     'DIV',
     'MOD',
     'INTEGER',
+    'BOOLEAN',
     'WRITE',
     'READ',
-    'THEN',
+    'USES',
+    'REAL',
     #simbolos
     'PLUS',             #+
     'MINUS',            #-
@@ -85,8 +96,7 @@ tokens = (
     'ID',
     'COMMENTBLOCK',
     'COMMENTLINE',
-    'STRING',
-    'COMPARATION'
+    'STRING'
 )
 #Reglas ER
 t_PLUS = r'\+'
@@ -94,7 +104,6 @@ t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
 t_EQUAL  = r'='
-t_COMPARATION = r'='
 t_DISTINT = r'!'
 t_LESS   = r'<'
 t_GREATER = r'>'
@@ -117,12 +126,20 @@ def t_ARRAY(t):
     r'array'
     return t
 
+def t_AND(t):
+    r'and'
+    return t
+
 def t_BEGIN(t):
     r'begin'
     return t
 
 def t_CONST(t):
     r'const'
+    return t
+
+def t_COMPARATION(t):
+    r'comparation'
     return t
 
 def t_DOWNTO(t):
@@ -141,6 +158,10 @@ def t_FUNCTION(t):
     r'function'
     return t
 
+def t_FORWARD(t):
+    r'forward'
+    return t
+
 def t_WRITE(t):
     r'write'
     return t
@@ -149,12 +170,31 @@ def t_READ(t):
     r'read'
     return t
 
+def t_CHAR(t):
+    r'char'
+    return t
+
+def t_USES(t):
+    r'uses'
+    return t
+def t_INPUT(t):
+    r'input'
+    return t
+
+def t_OUTPUT(t):
+    r'output'
+    return t
+
 def t_IF(t):
     r'if'
     return t
 
 def t_NIL(t):
     r'nil'
+    return t
+
+def t_NOT(t):
+    r'not'
     return t
    
 def t_PROGRAM(t):
@@ -200,6 +240,10 @@ def t_PACKED(t):
 def t_OF(t):
     r'of'
     return t
+
+def t_OR(t):
+    r'or'
+    return t
     
 def t_PROCEDURE(t):
     r'procedure'
@@ -219,6 +263,10 @@ def t_THEN(t):
 
 def t_TYPE(t):
     r'type'
+    return t 
+
+def t_REAL(t):
+    r'real'
     return t 
      
 def t_UNTIL(t):
@@ -271,6 +319,10 @@ def t_MOD(t):
 
 def t_INTEGER(t):
     r'integer'
+    return t
+
+def t_BOOLEAN(t):
+    r'boolean'
     return t
 
 def t_GREATEQUAL(t):
@@ -336,8 +388,7 @@ if __name__ == '__main__':
 	else:
 		fin = 'prueba.pas'              #leer el archivo txt
 	f = open(fin, 'r')
-	data = f.read()
+	data = f.read().lower()
 	print (data)
 	lexer.input(data)
 	test(data, lexer)
-

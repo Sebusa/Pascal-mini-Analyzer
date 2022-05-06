@@ -1,21 +1,21 @@
-//Código de prueba
-program posneg;
-var integer:integer;
+program leccion5;
+
+const
+    PI = 3.14156;
+    RA = 2;
+    CA = 'hola';
+
+VAR
+    radio,casa,vereda : string;
+    otro : integer;
+
 begin
- clrscr;
-  write('Enter a number:');
-  read(no);
-//Comentario de prueba;
-  if (no > 0) then
-   write('You enter Positive Number')
-  else
-    if (no < 0) then
-     write('You enter Negative number')
-    else
-      if (no = 0) then
-      write('You enter Zero');
-{Comentario
-de
-prueba}
-  read;
- end.
+   write('Escribe el radio: '); 
+   read(radio);
+   radio = 2 + 3;
+   while radio > 0 do
+    if radio>0 
+    then
+        write('hola');
+
+end.
